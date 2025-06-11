@@ -1,0 +1,83 @@
+-- SQL Script para la base de datos joyalex18k
+-- Generado por Gemini (Versión corregida sin la palabra 'VISIBLE' en los índices)
+
+-- Desactivar temporalmente la verificación de claves foráneas para permitir el DROP TABLE
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- Borrar tablas si ya existen (para una importación limpia)
+DROP TABLE IF EXISTS `productos`;
+DROP TABLE IF EXISTS `usuarios`;
+DROP TABLE IF EXISTS `roles`;
+
+-- Reactivar la verificación de claves foráneas
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- -----------------------------------------------------
+-- Table `roles`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `roles` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `nombre` VARCHAR(50) NOT NULL UNIQUE,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `usuarios`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `usuarios` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `nombre_usuario` VARCHAR(100) NOT NULL UNIQUE,
+    `correo` VARCHAR(100) NOT NULL UNIQUE,
+    `contrasena` VARCHAR(255) NOT NULL,
+    `rol_id` INT(11) NOT NULL,
+    PRIMARY KEY (`id`),
+    -- Eliminada la palabra 'VISIBLE' aquí
+    INDEX `fk_usuarios_roles1_idx` (`rol_id` ASC),
+    CONSTRAINT `fk_usuarios_roles1`
+        FOREIGN KEY (`rol_id`)
+        REFERENCES `roles` (`id`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
+) ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `productos`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `productos` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `nombre` VARCHAR(100) NOT NULL,
+    `descripcion` TEXT NULL,
+    `precio` DECIMAL(10,2) NOT NULL,
+    `stock` INT(11) NOT NULL,
+    `creado_por` INT(11) NOT NULL,
+    `fecha_creacion` DATETIME NOT NULL,
+    PRIMARY KEY (`id`),
+    -- Eliminada la palabra 'VISIBLE' aquí
+    INDEX `fk_productos_usuarios1_idx` (`creado_por` ASC),
+    CONSTRAINT `fk_productos_usuarios1`
+        FOREIGN KEY (`creado_por`)
+        REFERENCES `usuarios` (`id`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
+) ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Datos de prueba
+-- -----------------------------------------------------
+
+-- Insertar roles
+INSERT INTO `roles` (`nombre`) VALUES
+('ADMIN'),
+('USER');
+
+-- Insertar usuarios
+INSERT INTO `usuarios` (`nombre_usuario`, `correo`, `contrasena`, `rol_id`) VALUES
+('adminUser', 'admin@joyalex.com', 'adminPass123', 1),
+('regularUser', 'user@joyalex.com', 'userPass123', 2);
+
+-- Insertar productos
+INSERT INTO `productos` (`nombre`, `descripcion`, `precio`, `stock`, `creado_por`, `fecha_creacion`) VALUES
+('Anillo de Zafiro Imperial', 'Un anillo de oro blanco 18k con un zafiro imperial de 2 quilates.', 1500.00, 5, 1, NOW()),
+('Collar de Perlas Cultivadas', 'Delicado collar de perlas de agua dulce con broche de plata 925.', 250.50, 15, 1, NOW()),
+('Aretes de Diamante Solitario', 'Aretes de oro amarillo 14k con diamantes solitarios de 0.5 quilates cada uno.', 980.20, 8, 2, NOW());
