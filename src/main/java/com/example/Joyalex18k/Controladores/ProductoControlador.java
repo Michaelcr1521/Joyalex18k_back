@@ -11,6 +11,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/productos")
+// CORRECCIÓN: Permite que cualquier dispositivo de tu red local acceda a los datos
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProductoControlador {
 
     @Autowired
@@ -26,7 +28,7 @@ public class ProductoControlador {
     public ResponseEntity<Producto> obtenerProductoPorId(@PathVariable Long id) {
         return productoServicio.obtenerProductoPorId(id)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto con ID " + id + " no encontrado."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado."));
     }
 
     @PostMapping

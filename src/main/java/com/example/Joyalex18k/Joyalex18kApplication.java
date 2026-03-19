@@ -20,7 +20,11 @@ public class Joyalex18kApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-						.allowedOrigins("http://localhost:5173")
+						// Permitimos localhost y la IP de tu PC
+						.allowedOrigins(
+								"http://localhost:5173",
+								"http://192.168.1.116:5173"
+						)
 						.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
 						.allowedHeaders("*");
 			}
